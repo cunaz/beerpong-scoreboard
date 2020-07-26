@@ -5,13 +5,39 @@ import requests
 from bs4 import BeautifulSoup
 
 
+class Display:
+    def __init__(self, master, aufloesung):
+        #self.master = Toplevel(master)
+        self.var_test = StringVar()
+        self.var_test.set("Start")
+        self.master = master
+        self.master.geometry(aufloesung)
+        self.master.title("Bierpong Scoreboard - Display")
+        self.master.configure(bg='black')
+        self.master.resizable(width=0, height=0)
+        self.lb_test = Label(self.master, textvariable=self.var_test, fg="white", bg="black")
+        self.lb_test.pack()
+
+class Controller:
+    def test(self, val):
+        self.obj.var_test.set(str(val))
+
+    def __init__(self,master, obj):
+        self.master = master
+        self.obj = obj
+        self.master.geometry("800x600")
+        self.test_scale = Scale(self.master, from_=0, to=42, command=self.test)
+        self.test_scale.pack()
+
+    
+
 
 
 class Einstellungen:
     
     def __init__(self,screen_einstellungen):
         self.master = screen_einstellungen
-        aufloesungen = ["1920x1080",]
+        aufloesungen = ["1920x200",]
         data=[] #nichts drinnen
         self.teams = []
         self.teams_player = []
@@ -22,7 +48,7 @@ class Einstellungen:
 
         self.lb_resolution = Label(screen_einstellungen, text="Auflösung")
         self.lb_resolution.place(relx=0.015, rely=0.2)
-        self.cb_resolution = ttk.Combobox(screen_einstellungen, value=aufloesungen)
+        self.cb_resolution = ttk.Combobox(screen_einstellungen, value=aufloesungen, state='readonly')
         self.cb_resolution.place(relx=0.2, rely=0.2)
     
 
@@ -37,7 +63,7 @@ class Einstellungen:
         self.cb_awayteam = ttk.Combobox(screen_einstellungen, value=self.teams, postcommand = self.updateCB)
         self.cb_awayteam.place(relx=0.2, rely=0.4)
 
-#####################################
+
         self.lb_playerhome = Label(screen_einstellungen, text="Spieler-Heim")
         self.lb_playerhome.place(relx=0.6, rely=0.3)
         self.cb_playerhome = ttk.Combobox(screen_einstellungen, postcommand= self.updateCB_Home)
@@ -53,7 +79,7 @@ class Einstellungen:
         self.bt_getdata = ttk.Button(screen_einstellungen, text="Lade Daten", command=self.getdata)
         self.bt_getdata.place(relx=0.55, rely=0.15, height=35, width=290)
         
-        self.bt_newgame = ttk.Button(screen_einstellungen, text="New Game", )
+        self.bt_newgame = ttk.Button(screen_einstellungen, text="New Game", command=self.newGame )
         self.bt_newgame.place(relx=0.45, rely=0.75,relwidth=0.3)
 
         self.sep_setting = ttk.Separator(screen_einstellungen)
@@ -82,8 +108,12 @@ class Einstellungen:
                 players.append(new_player)
             #print (players)
             self.teams_player.append(players.copy())
-    
-    
+
+    def newGame(self):
+        self.win = Toplevel(self.master)
+        dis = Display(self.win, self.cb_resolution.get())
+        self.win2 = Toplevel(self.win)
+        Controller(self.win2, dis)
     
     def updateCB(self):
         
