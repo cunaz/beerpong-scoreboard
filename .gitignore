@@ -7,6 +7,8 @@ __pycache__/
 #eigene
 
 *.bak*
+old/
+test_display/
 
 # C extensions
 *.so

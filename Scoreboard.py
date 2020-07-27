@@ -8,6 +8,12 @@ from bs4 import BeautifulSoup
 class Display:
     def __init__(self, master, aufloesung):
         #self.master = Toplevel(master)
+        self.fontcolor = "white"
+        self.background_color = "black"
+        self.var_spieler_heim = StringVar()
+        self.var_spieler_auswaerts = StringVar()
+
+
         self.var_test = StringVar()
         self.var_test.set("Start")
         self.master = master
@@ -17,6 +23,9 @@ class Display:
         self.master.resizable(width=0, height=0)
         self.lb_test = Label(self.master, textvariable=self.var_test, fg="white", bg="black")
         self.lb_test.pack()
+        
+        self.lb_spieler_heim = Label(self.master, text="Spieler Heim", textvariable=self.var_spieler_heim, fg=self.fontcolor, bg=self.lb_background_color)
+
 
 class Controller:
     def test(self, val):
