@@ -6,25 +6,80 @@ from bs4 import BeautifulSoup
 
 
 class Display:
-    def __init__(self, master, aufloesung):
+    def __init__(self, master, aufloesung, playerhome, playeraway):
         #self.master = Toplevel(master)
         self.fontcolor = "white"
         self.background_color = "black"
+        self.font = "Helvetica"
+        self.fontsize_playername = 40
+        self.fontsize_stats = 30
         self.var_spieler_heim = StringVar()
+        self.var_spieler_heim.set(playerhome)
         self.var_spieler_auswaerts = StringVar()
+        self.var_spieler_auswaerts.set(playeraway)
+        self.var_stats_heim = StringVar()
+        self.var_stats_auswaerts = StringVar()
+        self.var_stats_auswaerts.set("0% 0/0")
+        self.var_stats_heim.set("0/0 0%")
 
 
-        self.var_test = StringVar()
-        self.var_test.set("Start")
         self.master = master
-        self.master.geometry(aufloesung)
+        if len(aufloesung)>0:
+            self.master.geometry(aufloesung)
+        else:
+            self.master.geometry("1920x200")
         self.master.title("Bierpong Scoreboard - Display")
         self.master.configure(bg='black')
         self.master.resizable(width=0, height=0)
-        self.lb_test = Label(self.master, textvariable=self.var_test, fg="white", bg="black")
-        self.lb_test.pack()
+
         
-        self.lb_spieler_heim = Label(self.master, text="Spieler Heim", textvariable=self.var_spieler_heim, fg=self.fontcolor, bg=self.lb_background_color)
+        self.lb_spieler_heim = Label(self.master,  textvariable=self.var_spieler_heim, fg=self.fontcolor, bg=self.background_color, font=(self.font,self.fontsize_playername))
+        self.lb_spieler_heim.place(relx=0, rely=0.05, anchor=NW )
+        self.lb_spieler_auswaerts = Label(self.master,  textvariable=self.var_spieler_auswaerts, fg=self.fontcolor, bg=self.background_color, font=(self.font,self.fontsize_playername))
+        self.lb_spieler_auswaerts.place( relx=1, rely=0.05, anchor=NE)
+
+        self.lb_stats_heim = Label(self.master, textvariable=self.var_stats_heim, fg=self.fontcolor, bg=self.background_color, font=(self.font, self.fontsize_stats) )
+        self.lb_stats_heim.place(relx=0, rely=0.5, anchor=NW)
+        self.lb_stats_auswaerts = Label(self.master, textvariable=self.var_stats_auswaerts, fg=self.fontcolor, bg=self.background_color, font=(self.font, self.fontsize_stats))
+        self.lb_stats_auswaerts.place(relx=1, rely=0.5, anchor=NE)
+
+
+        self.frame1 = Frame(self.master)
+        self.frame1.place(relx=0.33, rely=0, relheight=1.0, relwidth=0.333)
+        self.frame1.configure(background=self.background_color)
+
+        self.frame_home = Frame(self.frame1)
+        self.frame_home.place(x=10, y=10, height=180, width=235)
+        self.frame_home.configure(background=self.background_color)
+
+        self.frame_away = Frame(self.frame1)
+        self.frame_away.place(x=(640-245), y=10, height=180, width=235) #640 ist ein 1/3 der akutellen Breite - 
+        self.frame_away.configure(background=self.background_color)
+
+        #TODO Skalierbarkeit der Breite
+        self.img_cup_beer = PhotoImage(file="./cup.png")
+        self.img_cup_water = PhotoImage(file="./cup_water.png")
+        self.bt_cups = []
+        self.createButtons(self.frame_home,0)
+        self.createButtons(self.frame_away,190)
+
+    def createButtons(self, frame, side):
+        offset = 0
+        bt_water = Button(frame)
+        bt_water.place(x=side, y=90 ,height='45', width='45')
+        bt_water.configure(image=self.img_cup_water)
+        bt_water.configure(borderwidth="0")
+        bt_water.configure(background=self.background_color)
+        for hoehe in range(4):
+            for breite in range(4-hoehe):
+                tmp = Button(frame)
+                tmp.place(x=  abs(190-(breite*45)-offset-side), y=135-(hoehe*45) ,height='45', width='45')
+                tmp.configure(image=self.img_cup_beer)
+                tmp.configure(borderwidth="0")
+                tmp.configure(background=self.background_color)
+                self.bt_cups.append(tmp)
+            offset += int(45/2)
+
 
 
 class Controller:
@@ -119,8 +174,9 @@ class Einstellungen:
             self.teams_player.append(players.copy())
 
     def newGame(self):
+        #TODO implementierung doubles
         self.win = Toplevel(self.master)
-        dis = Display(self.win, self.cb_resolution.get())
+        dis = Display(self.win, self.cb_resolution.get(),self.cb_playerhome.get(), self.cb_playeraway.get())
         self.win2 = Toplevel(self.win)
         Controller(self.win2, dis)
     
