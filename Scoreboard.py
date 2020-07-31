@@ -25,23 +25,39 @@ class Display:
             offset += int(45/2)
 
     
-    def __init__(self, master, aufloesung, playerhome, playeraway):
+    def __init__(self, master, aufloesung, playerhome, playeraway, playerhome2, playeraway2):
         #self.master = Toplevel(master)
         self.fontcolor = "white"
         self.background_color = "black"
         self.font = "Helvetica"
-        self.fontsize_playername = 40
+        
         self.fontsize_stats = 30
         self.var_spieler_heim = StringVar()
-        self.var_spieler_heim.set(playerhome)
         self.var_spieler_auswaerts = StringVar()
-        self.var_spieler_auswaerts.set(playeraway)
+        
+        if len(playerhome2)>0:
+            tmp = ""
+            tmp += playerhome + "/" + playerhome2
+            self.var_spieler_heim.set(tmp)
+            tmp= ""
+            tmp += playeraway + "/" + playeraway2
+            self.var_spieler_auswaerts.set(tmp)
+            self.fontsize_playername = 22
+        else:
+            self.fontsize_playername = 40
+            self.var_spieler_heim.set(playerhome)
+            self.var_spieler_auswaerts.set(playeraway)
+        
+        
+        
         self.var_stats_heim = StringVar()
         self.var_stats_auswaerts = StringVar()
         self.var_stats_auswaerts.set("0% 0/0")
         self.var_stats_heim.set("0/0 0%")
-        self.img_cup_beer = PhotoImage(file="./cup.png")
-        self.img_cup_water = PhotoImage(file="./cup_water.png")
+        self.img_cup_beer_base = """iVBORw0KGgoAAAANSUhEUgAAAC0AAAAtCAYAAAA6GuKaAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAFfSURBVGhD7ZjbEYMgEEXFCtJTKkllqSQ9pQMiI0wU3d278hLH8xO/2MP1qkOMtXbIgjHyQtYaf5VEmjQiSpGwAb10iiiFcgOj/8UoIexQroslXUp2DyB1Oemawg5gHp+0Uvj7fvqrLY/Xx1+BMInT0qAwJ0oBb4AQ35cGhI/IxkDyO+JbaUE4h2yMKB+Jq155JYQd2nXX0kzKpYQD7PqR11+6oXAAFdd9EU+CKF0r5QAyb5YW3hinwXuySddOOSDN7bTTvVQjMPmSSbeqRoCb32k9OuSWrsUtXQtSWn2myww3f0SO7Kdi8r1ep1tVRJo7S/dSEe8p1qN22si8zjvNVKRW2uychd866YbiqLBDVY9S4tp1L/JfXgA8hh2Rh5Ml6kpLO5TnR24D6moxzxcv7Whx8GWEHfKDKCyQHWCenPSSkqkrwtF9EUulrlxXl3RMSvIJAaRJL0E2kOVODcMPZGW3H7oNvYMAAAAASUVORK5CYII="""
+        self.img_cup_beer = PhotoImage(data=self.img_cup_beer_base)
+        self.img_cup_water_base = """iVBORw0KGgoAAAANSUhEUgAAAC0AAAAtCAYAAAA6GuKaAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAFeSURBVGhD7ZhLEoMgEETFG+R42eVo2eV4OQKREiqKzkyP/MTybeKKebStFjHW2iELxsgLWWv8VRJp0ogoRcIG9NIpohTKDYz+F6OEsEO5LpZ0Kdk9gNTlpGsKO4B5fNJK4dfn66+2vJ8PfwXCJE5Lg8KcKAW8AUJ8XxoQPiIbA8nviG+lBeEcsjGifCSueuWVEHZo111LMymXEg6w60def+mGwgFUXPdFPAmidK2UA8i8WVp4Y5wG78kmXTvlgDS30073Uo3A5Esm3aoaAW5+p/XokFu6Frd0LUhp9ZkuM9z8ETmyn4rJ93qdblURae4s3UtFvKdYj9ppI/M67zRTkVpps3MWfuukG4qjwg5VPUqJa9e9yH95AfAYdkQeTpaoKy3tUJ4fuQ2oq8U8X7y0o8XBlxF2yA+isEB2gHly0ktKpq4IR/dFLJW6cl1d0jEpyScEkCa9BNlAljs1DD+vILcf1CsOlgAAAABJRU5ErkJggg=="""
+        self.img_cup_water = PhotoImage(data=self.img_cup_water_base)
         self.master = master
         if len(aufloesung)>0:
             self.master.geometry(aufloesung)
@@ -77,10 +93,25 @@ class Display:
 
         self.var_spielstand = StringVar()
         self.var_spielstand.set("0:0")
-        self.lb_spielstand = Label(self.frame1, textvariable=self.var_spielstand, fg=self.fontcolor,bg=self.background_color, font=(self.font, self.fontsize_stats))
+        self.lb_spielstand = Label(self.frame1, textvariable=self.var_spielstand, fg=self.fontcolor,bg=self.background_color, font=(self.font, self.fontsize_stats+10))
         self.lb_spielstand.place(relx=0.5, rely=0.5, anchor=CENTER)
+
+        self.var_satz = StringVar()
+        self.var_satz.set("0:0")
+        self.lb_satz = Label(self.frame1, textvariable=self.var_satz,fg=self.fontcolor,bg=self.background_color, font=(self.font, self.fontsize_stats) )
+        self.lb_satz.place(relx=0.5, rely=0.2, anchor=CENTER)
+
+
         #TODO Skalierbarkeit der Breite
         
+        self.var_wongames_home = StringVar()
+        self.var_wongames_away = StringVar()
+
+        self.la_games_home = Label(self.master, textvariable=self.var_wongames_home, fg=self.fontcolor, bg=self.background_color, font=(self.font, 18) )
+        self.la_games_home.place(relx=0.32, rely=0.2, anchor=CENTER)
+        self.la_games_away = Label(self.master, textvariable=self.var_wongames_away, fg= self.fontcolor, bg=self.background_color, font=(self.font, 18))
+        self.la_games_away.place(relx=0.68, rely=0.2, anchor=CENTER)
+
         self.bt_cups_home = []
         self.bt_cups_away = []
         self.createButtons(self.frame_home,0,4,self.bt_cups_home)
@@ -115,8 +146,8 @@ class Controller:
         self.master = master
         self.obj = obj
         self.master.geometry("800x600")
-        self.img_cup_beer = PhotoImage(file="./cup.png")
-        self.img_cup_water = PhotoImage(file="./cup_water.png")
+        self.img_cup_beer = self.obj.img_cup_beer
+        self.img_cup_water = self.obj.img_cup_water
         self.fontcolor = "white"
         self.background_color = "black"
         self.font = "Helvetica"
@@ -143,14 +174,23 @@ class Controller:
         self.lb_spielstand = Label(self.frame_cups, textvariable=self.var_spielstand, fg=self.fontcolor,bg=self.background_color, font=(self.font, self.fontsize_stats))
         self.lb_spielstand.place(relx=0.5, rely=0.5, anchor=CENTER)
 
+        self.var_satz = StringVar()
+        self.var_satz.set("0:0")
+        self.lb_satz = Label(self.frame_cups, textvariable=self.var_satz,fg=self.fontcolor,bg=self.background_color, font=(self.font, self.fontsize_stats+10) )
+        self.lb_satz.place(relx=0.5, rely=0.2, anchor=CENTER)
+
+
         self.bt_overtime = Button(self.frame_cups, text="OT", command=self.overtime)
         self.bt_newgame = Button(self.frame_cups, text="New Game", command=self.newgame)
         
-
+        self.ergebnisse = []
+        #aktuelle sätze
+        self.var_satz_home = 0
+        self.var_satz_away = 0
         #akuteller spielstand
         self.var_game_home = 0
         self.var_game_away = 0
-        #ewiger spielstand
+        #ewiger hits
         self.home_cups_hit = 0
         self.home_cups_miss = 0
         self.away_cups_hit = 0
@@ -218,7 +258,9 @@ class Controller:
                     self.obj.createButtons(self.obj.frame_away,190,1,self.obj.bt_cups_away)  
             #really change display
 
-        if self.var_game_home >=10 and self.var_game_away>=10:
+         
+
+        if self.var_game_home >=10 or self.var_game_away>=10:
             self.bt_overtime.place(relx=0.5, rely = 0.7, anchor=CENTER)
             self.bt_newgame.place(relx=0.5, rely = 0.9, anchor=CENTER)
         #check overtime
@@ -253,8 +295,56 @@ class Controller:
         self.createButtons(self.frame_cups_away,190,2,self.bt_cups_away)
         self.obj.createButtons(self.obj.frame_away,190,2,self.obj.bt_cups_away)
         self.updateDisplay()   
+    
     def newgame(self):
-        pass
+
+        tmp = ""
+        self.ergebnisse.append(tmp)
+        if self.var_game_home>self.var_game_away:
+            tmp = self.obj.var_wongames_home.get()
+            tmp += " " + str(self.var_game_home)+":"+str(self.var_game_away)
+            self.obj.var_wongames_home.set(tmp)
+
+            #satz wird geändert
+            self.var_satz_home += 1
+        else:
+            tmp = self.obj.var_wongames_away.get()
+            tmp += " " + str(self.var_game_home)+":"+str(self.var_game_away)
+            self.obj.var_wongames_away.set(tmp)
+            self.var_satz_away += 1
+
+        tmp = ""
+        tmp = str(self.var_satz_home)+ ":" + str(self.var_satz_away)
+        self.var_satz.set(tmp)
+        self.obj.var_satz.set(tmp)
+
+
+        self.var_game_home = 0
+        self.var_game_away = 0
+        
+        for i in self.bt_cups_home:
+            i.place_forget()
+        for i in self.obj.bt_cups_home:
+            i.place_forget()
+        self.obj.bt_cups_home.clear()    
+        self.bt_cups_home.clear()
+        for i in self.bt_cups_away:
+            i.place_forget()
+        for i in self.obj.bt_cups_away:
+            i.place_forget()
+        self.obj.bt_cups_away.clear()    
+        self.bt_cups_away.clear()
+
+        self.createButtons(self.frame_cups_home,0,4,self.bt_cups_home)
+        self.obj.createButtons(self.obj.frame_home,0,4,self.obj.bt_cups_home)
+
+        self.createButtons(self.frame_cups_away,190,4,self.bt_cups_away)
+        self.obj.createButtons(self.obj.frame_away,190,4,self.obj.bt_cups_away)
+        
+        self.bt_newgame.place_forget()
+        self.bt_overtime.place_forget()
+
+        self.updateDisplay()
 
     def updateDisplay(self):
         
@@ -275,6 +365,12 @@ class Controller:
         else:
             percent1 = '{0:.0%}'.format((self.away_cups_hit/(self.away_cups_miss+self.away_cups_hit)))
         self.obj.var_stats_auswaerts.set(str(self.away_cups_hit)+":"+str(self.away_cups_miss)+" " + percent1  )
+        
+        stand = ""
+        stand = str(self.var_game_home)+":"+str(self.var_game_away)
+        self.var_spielstand.set(stand)
+        self.obj.var_spielstand.set(stand)
+        
         self.master.update()
         self.obj.master.update()
 
@@ -317,13 +413,13 @@ class Einstellungen:
 
 
         self.lb_playerhome = Label(screen_einstellungen, text="Spieler-Heim")
-        self.lb_playerhome.place(relx=0.6, rely=0.3)
+        self.lb_playerhome.place(relx=0.54, rely=0.3)
         self.cb_playerhome = ttk.Combobox(screen_einstellungen, postcommand= self.updateCB_Home)
         self.cb_playerhome.place(relx=0.75, rely=0.3)
 
 
         self.lb_playeraway = Label(screen_einstellungen, text="Spieler-Auswärts")
-        self.lb_playeraway.place(relx=0.6, rely=0.4)
+        self.lb_playeraway.place(relx=0.54, rely=0.4)
         self.cb_playeraway = ttk.Combobox(screen_einstellungen, postcommand = self.updateCB_Away)
         self.cb_playeraway.place(relx=0.75, rely=0.4)
 
@@ -335,7 +431,31 @@ class Einstellungen:
         self.bt_newgame.place(relx=0.45, rely=0.75,relwidth=0.3)
 
         self.sep_setting = ttk.Separator(screen_einstellungen)
-        self.sep_setting.place(relx=0.3, rely=0.625, relwidth=0.1)
+        self.sep_setting.place(relx=0.333, rely=0.666, relwidth=0.333)
+
+        self.var_double = IntVar()
+        self.bt_doubles = Checkbutton(screen_einstellungen, text="Doppel", variable = self.var_double, onvalue=1, offvalue=0 , command=self.checkDoubles)
+        self.bt_doubles.place(relx=0.2, rely=0.5)
+
+        self.lb_playerhome_2 = Label(screen_einstellungen, text="Spieler-Heim-Doppel")
+        self.lb_playerhome_2.place(relx=0.54, rely=0.5)
+        self.cb_playerhome_2 = ttk.Combobox(screen_einstellungen, postcommand= self.updateCB_Home, state=DISABLED)
+        self.cb_playerhome_2.place(relx=0.75, rely=0.5)
+
+
+        self.lb_playeraway_2 = Label(screen_einstellungen, text="Spieler-Auswärts-Doppel")
+        self.lb_playeraway_2.place(relx=0.54, rely=0.6)
+        self.cb_playeraway_2 = ttk.Combobox(screen_einstellungen, postcommand = self.updateCB_Away, state=DISABLED)
+        self.cb_playeraway_2.place(relx=0.75, rely=0.6)
+
+
+    def checkDoubles(self):
+        if self.var_double.get() == 1:
+            self.cb_playerhome_2.configure(state=NORMAL)
+            self.cb_playeraway_2.configure(state=NORMAL)
+        else:
+            self.cb_playerhome_2.configure(state=DISABLED)
+            self.cb_playeraway_2.configure(state=DISABLED)
 
     def getdata(self):
         self.teams.clear()
@@ -364,7 +484,7 @@ class Einstellungen:
     def newGame(self):
         #TODO implementierung doubles
         self.win = Toplevel(self.master)
-        dis = Display(self.win, self.cb_resolution.get(),self.cb_playerhome.get(), self.cb_playeraway.get())
+        dis = Display(self.win, self.cb_resolution.get(),self.cb_playerhome.get(), self.cb_playeraway.get(), self.cb_playerhome_2.get(), self.cb_playeraway_2.get())
         self.win2 = Toplevel(self.win)
         Controller(self.win2, dis)
     
@@ -379,12 +499,15 @@ class Einstellungen:
             #get index of team
             
             self.cb_playerhome['values'] = self.teams_player[self.teams.index(self.cb_hometeam.get())].copy()
+            self.cb_playerhome_2['values'] = self.teams_player[self.teams.index(self.cb_hometeam.get())].copy()
+
 
     def updateCB_Away(self):
         if len(self.cb_awayteam.get())>0:
             #get index of team
             
             self.cb_playeraway['values'] = self.teams_player[self.teams.index(self.cb_awayteam.get())].copy()
+            self.cb_playeraway_2['values'] = self.teams_player[self.teams.index(self.cb_awayteam.get())].copy()
 
     
 def main():
