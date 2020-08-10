@@ -1,0 +1,4 @@
+grequests
+functools
+bs4
+tkinter
