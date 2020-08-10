@@ -19,7 +19,7 @@ class Display:
         for hoehe in range(rows):
             for breite in range(rows-hoehe):
                 tmp = Button(frame)
-                tmp.place(x=  abs(190-(breite*45)-offset-side), y=135-(hoehe*45) ,height='45', width='45')
+                tmp.place(x=  abs(190-(breite*45)-offset-side-(round(abs(rows-4)*(45/2)))), y=135-(hoehe*45) ,height='45', width='45')
                 tmp.configure(image=self.img_cup_beer)
                 tmp.configure(borderwidth="0")
                 tmp.configure(background=self.background_color)
@@ -56,6 +56,12 @@ class Display:
         self.var_stats_auswaerts = StringVar()
         self.var_stats_auswaerts.set("0% 0/0")
         self.var_stats_heim.set("0/0 0%")
+        self.var_stats_heim_set = StringVar()
+        self.var_stats_auswaerts_set = StringVar()
+        self.var_stats_heim_set.set("0/0 0%")
+        self.var_stats_auswaerts_set.set("0/0 0%")
+
+
         self.img_cup_beer_base = """iVBORw0KGgoAAAANSUhEUgAAAC0AAAAtCAYAAAA6GuKaAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAFfSURBVGhD7ZjbEYMgEEXFCtJTKkllqSQ9pQMiI0wU3d278hLH8xO/2MP1qkOMtXbIgjHyQtYaf5VEmjQiSpGwAb10iiiFcgOj/8UoIexQroslXUp2DyB1Oemawg5gHp+0Uvj7fvqrLY/Xx1+BMInT0qAwJ0oBb4AQ35cGhI/IxkDyO+JbaUE4h2yMKB+Jq155JYQd2nXX0kzKpYQD7PqR11+6oXAAFdd9EU+CKF0r5QAyb5YW3hinwXuySddOOSDN7bTTvVQjMPmSSbeqRoCb32k9OuSWrsUtXQtSWn2myww3f0SO7Kdi8r1ep1tVRJo7S/dSEe8p1qN22si8zjvNVKRW2uychd866YbiqLBDVY9S4tp1L/JfXgA8hh2Rh5Ml6kpLO5TnR24D6moxzxcv7Whx8GWEHfKDKCyQHWCenPSSkqkrwtF9EUulrlxXl3RMSvIJAaRJL0E2kOVODcMPZGW3H7oNvYMAAAAASUVORK5CYII="""
         self.img_cup_beer = PhotoImage(data=self.img_cup_beer_base)
         self.img_cup_water_base = """iVBORw0KGgoAAAANSUhEUgAAAC0AAAAtCAYAAAA6GuKaAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAFeSURBVGhD7ZhLEoMgEETFG+R42eVo2eV4OQKREiqKzkyP/MTybeKKebStFjHW2iELxsgLWWv8VRJp0ogoRcIG9NIpohTKDYz+F6OEsEO5LpZ0Kdk9gNTlpGsKO4B5fNJK4dfn66+2vJ8PfwXCJE5Lg8KcKAW8AUJ8XxoQPiIbA8nviG+lBeEcsjGifCSueuWVEHZo111LMymXEg6w60def+mGwgFUXPdFPAmidK2UA8i8WVp4Y5wG78kmXTvlgDS30073Uo3A5Esm3aoaAW5+p/XokFu6Frd0LUhp9ZkuM9z8ETmyn4rJ93qdblURae4s3UtFvKdYj9ppI/M67zRTkVpps3MWfuukG4qjwg5VPUqJa9e9yH95AfAYdkQeTpaoKy3tUJ4fuQ2oq8U8X7y0o8XBlxF2yA+isEB2gHly0ktKpq4IR/dFLJW6cl1d0jEpyScEkCa9BNlAljs1DD+vILcf1CsOlgAAAABJRU5ErkJggg=="""
@@ -74,11 +80,16 @@ class Display:
         self.lb_spieler_heim.place(relx=0, rely=0.05, anchor=NW )
         self.lb_spieler_auswaerts = Label(self.master,  textvariable=self.var_spieler_auswaerts, fg=self.fontcolor, bg=self.background_color, font=(self.font,self.fontsize_playername))
         self.lb_spieler_auswaerts.place( relx=1, rely=0.05, anchor=NE)
-
+        #percentage all games
         self.lb_stats_heim = Label(self.master, textvariable=self.var_stats_heim, fg=self.fontcolor, bg=self.background_color, font=(self.font, self.fontsize_stats) )
         self.lb_stats_heim.place(relx=0, rely=0.5, anchor=NW)
         self.lb_stats_auswaerts = Label(self.master, textvariable=self.var_stats_auswaerts, fg=self.fontcolor, bg=self.background_color, font=(self.font, self.fontsize_stats))
         self.lb_stats_auswaerts.place(relx=1, rely=0.5, anchor=NE)
+        #percentage per game
+        self.lb_stats_heim_set = Label(self.master, textvariable=self.var_stats_heim_set, fg=self.fontcolor, bg=self.background_color, font=(self.font, self.fontsize_stats-8))
+        self.lb_stats_heim_set.place(relx=0, rely=0.75, anchor=NW)
+        self.lb_stats_auswaerts_set = Label(self.master, textvariable=self.var_stats_auswaerts_set, fg=self.fontcolor, bg=self.background_color, font=(self.font, self.fontsize_stats-8))
+        self.lb_stats_auswaerts_set.place(relx=1, rely=0.75, anchor=NE)
 
 
         self.frame1 = Frame(self.master)
@@ -197,6 +208,11 @@ class Controller:
         self.home_cups_miss = 0
         self.away_cups_hit = 0
         self.away_cups_miss = 0
+        #ewige hits pro satz
+        self.home_cups_hit_set = 0
+        self.home_cups_miss_set = 0
+        self.away_cups_hit_set = 0
+        self.away_cups_miss_set = 0
         
         self.master.mainloop()
 
@@ -209,6 +225,7 @@ class Controller:
             
             self.home_cups_hit +=1
             self.var_game_home +=1
+            self.home_cups_hit_set +=1
 
             #check if rerack
             if self.var_game_home==4 or self.var_game_home==7 or self.var_game_home==9:
@@ -230,9 +247,18 @@ class Controller:
                     self.createButtons(self.frame_cups_home,0,1,self.bt_cups_home)
                     self.obj.createButtons(self.obj.frame_home,0,1,self.obj.bt_cups_home)
 
+            #rerack in der overtime
+            if self.var_game_home >10 and self.var_game_home%3==0: 
+                for i in self.bt_cups_home:
+                    i.place_forget()
+                for i in self.obj.bt_cups_home:
+                    i.place_forget()
+                self.obj.bt_cups_home.clear()    
+                self.bt_cups_home.clear()
+                self.createButtons(self.frame_cups_home,0,1,self.bt_cups_home)
+                self.obj.createButtons(self.obj.frame_home,0,1,self.obj.bt_cups_home)
 
-            
-            
+  
         else: # away
             self.bt_cups_away[id].place_forget()
             #really change display
@@ -240,6 +266,8 @@ class Controller:
 
             self.away_cups_hit +=1
             self.var_game_away +=1
+            self.away_cups_hit_set +=1
+
             if self.var_game_away==4 or self.var_game_away==7 or self.var_game_away==9:
                 #do rerack
                 for i in self.bt_cups_away:
@@ -258,6 +286,21 @@ class Controller:
                 if self.var_game_away==9: 
                     self.createButtons(self.frame_cups_away,190,1,self.bt_cups_away)
                     self.obj.createButtons(self.obj.frame_away,190,1,self.obj.bt_cups_away)  
+            
+            #rerack in der overtime
+            if self.var_game_away>10 and (self.var_game_away%3)==0: 
+                for i in self.bt_cups_away:
+                    i.place_forget()
+                for i in self.obj.bt_cups_away:
+                    i.place_forget()
+                self.obj.bt_cups_away.clear()    
+                self.bt_cups_away.clear()
+                self.createButtons(self.frame_cups_away,190,1,self.bt_cups_away)
+                self.obj.createButtons(self.obj.frame_away,190,1,self.obj.bt_cups_away)
+            
+            
+            
+            
             #really change display
 
          
@@ -271,8 +314,10 @@ class Controller:
     def cuppressed_miss(self, idTeam):
         if idTeam==0:
             self.home_cups_miss +=1
+            self.home_cups_miss_set +=1
         else:
             self.away_cups_miss +=1
+            self.away_cups_miss_set +=1
 
         self.updateDisplay()
 
@@ -323,6 +368,12 @@ class Controller:
 
         self.var_game_home = 0
         self.var_game_away = 0
+
+        #percentage pro satz reset
+        self.home_cups_hit_set = 0
+        self.home_cups_miss_set = 0
+        self.away_cups_hit_set = 0
+        self.away_cups_miss_set = 0 
         
         for i in self.bt_cups_home:
             i.place_forget()
@@ -360,14 +411,29 @@ class Controller:
             percent = '{0:.0%}'.format((self.home_cups_hit/(self.home_cups_miss+self.home_cups_hit)))
     
         self.obj.var_stats_heim.set(str(self.home_cups_hit)+":"+str(self.home_cups_miss)+" " + percent  )
-        
+        #stats pro satz
+        if (self.home_cups_miss_set+self.home_cups_hit_set)==0:
+            percent = "100%"
+        else:
+            percent = '{0:.0%}'.format((self.home_cups_hit_set/(self.home_cups_hit_set+self.home_cups_miss_set)))
+        self.obj.var_stats_heim_set.set(str(self.home_cups_hit_set)+":"+str(self.home_cups_miss_set)+ " " + percent)
+
         #away
         if (self.away_cups_miss+self.away_cups_hit)==0:
             percent1 = "100%"
         else:
             percent1 = '{0:.0%}'.format((self.away_cups_hit/(self.away_cups_miss+self.away_cups_hit)))
         self.obj.var_stats_auswaerts.set(str(self.away_cups_hit)+":"+str(self.away_cups_miss)+" " + percent1  )
-        
+        #stats pro satz
+        if (self.away_cups_miss_set+self.away_cups_hit_set)==0:
+            percent = "100%"
+        else:
+            percent = '{0:.0%}'.format((self.away_cups_hit_set/(self.away_cups_hit_set+self.away_cups_miss_set)))
+        self.obj.var_stats_auswaerts_set.set(str(self.away_cups_hit_set)+":"+str(self.away_cups_miss_set)+ " " + percent)
+
+
+
+
         stand = ""
         stand = str(self.var_game_home)+":"+str(self.var_game_away)
         self.var_spielstand.set(stand)
