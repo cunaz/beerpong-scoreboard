@@ -196,6 +196,12 @@ class Controller:
         self.bt_overtime = Button(self.frame_cups, text="OT", command=self.overtime)
         self.bt_newgame = Button(self.frame_cups, text="New Game", command=self.newgame)
         
+        #TODO
+        #self.bt_edit_score = Button(self.master, text="Satz manuell eingeben", command=self.editscore)
+        #self.bt_edit_score.place(relx= 0.1, rely= 0.7)
+        
+
+
         self.ergebnisse = []
         #aktuelle sätze
         self.var_satz_home = 0
@@ -216,6 +222,8 @@ class Controller:
         
         self.master.mainloop()
 
+    def editscore(self):
+        pass
 
     def cuppressed_hit(self, id, idTeam):
         if idTeam==0: # home
