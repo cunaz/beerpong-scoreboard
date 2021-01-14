@@ -1,7 +1,6 @@
 
 from tkinter import *
 import tkinter.ttk as ttk
-
 from bs4 import BeautifulSoup
 import functools
 import grequests
