@@ -29,7 +29,7 @@ class Display:
         #self.master = Toplevel(master)
         self.fontcolor = "white"
         self.background_color = "black"
-        self.font = "Helvetica"
+        self.font = "Bebas Kai"
         
         self.fontsize_stats = 30
         self.var_spieler_heim = StringVar()
@@ -532,51 +532,42 @@ class Einstellungen:
 
     def getdata(self):
         self.teams.clear()
-        domains = ["https://bpbl.de/tabelle/"]
-        req = (grequests.get(u) for u in domains)
-        response = grequests.map(req)
-        soup = BeautifulSoup(response[0].text, 'lxml')
-        table = soup.find('table',{'class':'sp-league-table'})
-        
-        # for href in table.find_all('a'):
-        #     players = []
-        #     self.teams.append(href.getText())
-        #     #players.append(href.getText()) #teamname
-        #     #print (href.get('href'))
-        #     tmpurl = href.get('href')
-            
-        #     tmp_response = requests.get(tmpurl)
-        #     soup = BeautifulSoup(tmp_response.text, 'lxml')
-        #     tmp_table =  soup.find('table',{'class':'sp-player-list'})
-        #     for player in tmp_table.find_all('a'):
-        #         #clean female players from ♀
-        #         tmp_player = player.getText()
-        #         new_player = tmp_player.replace('♀',"")        
-        #         players.append(new_player)
-        #     #print (players)
-        #     self.teams_player.append(players.copy())
 
-        l_teamurls = []
-        l_requests = []
-        for href in table.find_all('a'):
-            #fill team list
-            self.teams.append(href.getText())
-            l_teamurls.append(href.get('href'))
-        for i in l_teamurls:
-            l_requests.append(grequests.get(i))
-            
-        responses = grequests.map(l_requests)
-        for resp in responses:
-            players = []
-            soup = BeautifulSoup(resp.text, 'lxml')
-            tmp_table =  soup.find('table',{'class':'sp-player-list'})
-            for player in tmp_table.find_all('a'):
-                #clean female players from ♀
-                tmp_player = player.getText()
-                new_player = tmp_player.replace('♀',"")        
-                players.append(new_player)
-            #print (players)
-            self.teams_player.append(players.copy())
+        listligen = [["https://bpbl.de/tabellen/bundesliga/"],["https://bpbl.de/tabellen/2-bundesliga/"], ["https://bpbl.de/tabellen/3-bundesliga-a/"],["https://bpbl.de/tabellen/3-bundesliga-b/"],["https://bpbl.de/tabellen/4-bundesliga-a/"],["https://bpbl.de/tabellen/4-bundesliga-b/"],["https://bpbl.de/tabellen/4-bundesliga-c/"]  ]
+        liganamen = ["Liga 1", "Liga 2", "Liga 3A","Liga 3B", "Liga 4A", "Liga 4B", "Liga 4C"]
+        for count,i in enumerate(listligen):
+            platzhalter = "------- {0} ------".format(liganamen[count])
+            self.teams.append(platzhalter)
+            self.teams_player.append([])
+            	
+            #domains = ["https://bpbl.de/tabellen/bundesliga/"]
+            req = (grequests.get(u) for u in i )
+            response = grequests.map(req)
+            soup = BeautifulSoup(response[0].text, 'lxml')
+            table = soup.find('table',{'class':'sp-league-table'})
+        
+
+            l_teamurls = []
+            l_requests = []
+            for href in table.find_all('a'):
+                #fill team list
+                self.teams.append(href.getText())
+                l_teamurls.append(href.get('href'))
+            for i in l_teamurls:
+                l_requests.append(grequests.get(i))
+                
+            responses = grequests.map(l_requests)
+            for resp in responses:
+                players = []
+                soup = BeautifulSoup(resp.text, 'lxml')
+                tmp_table =  soup.find('table',{'class':'sp-player-list'})
+                for player in tmp_table.find_all('a'):
+                    #clean female players from ♀
+                    tmp_player = player.getText()
+                    new_player = tmp_player.replace('♀',"")        
+                    players.append(new_player)
+                #print (players)
+                self.teams_player.append(players.copy())
 
 
 
