@@ -533,8 +533,8 @@ class Einstellungen:
     def getdata(self):
         self.teams.clear()
 
-        listligen = [["https://bpbl.de/tabellen/bundesliga/"],["https://bpbl.de/tabellen/2-bundesliga/"], ["https://bpbl.de/tabellen/3-bundesliga-a/"],["https://bpbl.de/tabellen/3-bundesliga-b/"],["https://bpbl.de/tabellen/4-bundesliga-a/"],["https://bpbl.de/tabellen/4-bundesliga-b/"],["https://bpbl.de/tabellen/4-bundesliga-c/"]  ]
-        liganamen = ["Liga 1", "Liga 2", "Liga 3A","Liga 3B", "Liga 4A", "Liga 4B", "Liga 4C"]
+        listligen = [["https://bpbl.de/tabellen/bundesliga/"],["https://bpbl.de/tabellen/2-bundesliga/"], ["https://bpbl.de/tabellen/3-bundesliga-a/"],["https://bpbl.de/tabellen/3-bundesliga-b/"],["https://bpbl.de/tabellen/4-bundesliga-a/"],["https://bpbl.de/tabellen/4-bundesliga-b/"],["https://bpbl.de/tabellen/4-bundesliga-c/"], ["https://bpbl.de/tabellen/4-bundesliga-d/"]  ]
+        liganamen = ["Liga 1", "Liga 2", "Liga 3A","Liga 3B", "Liga 4A", "Liga 4B", "Liga 4C", "Liga 4D"]
         for count,i in enumerate(listligen):
             platzhalter = "------- {0} ------".format(liganamen[count])
             self.teams.append(platzhalter)
