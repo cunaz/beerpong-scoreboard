@@ -5,6 +5,49 @@ from bs4 import BeautifulSoup
 import functools
 import grequests
 #test
+
+## TODO: - add an undo button and set its action to trigger loadState method
+#        - before every state change, store change using storeState method
+#        - implement unimplemented methods below
+
+## TODO: move these two methods into controller class
+def storeState(undo_stack: "UndoStack",...):
+    # TODO: store current state
+    game_state = new GameState(....)
+    undo_stack.push(game_state)
+
+  def loadState(undo_stack: "UndoStack"):
+    if undo_stack.empty():
+      game_state = undo_stack.pop()
+      # TODO: apply state
+      ....
+
+
+class GameState:
+  # TODO: identify everything that needs to be stored
+  def __init__(self,....):
+    # TODO: store everything
+
+
+class UndoStack:
+  def __init__(self):
+    self.stack = []
+
+  # should be called every time a button is clicked that will change the game state before the change is applied
+  def push(self, game_state: "GameState") -> None:
+    self.stack.append(game_state)
+
+  # called by undo function to obtain
+  def pop(self) -> "GameState":
+    if not self.empty():
+      return self.stack.pop()
+    else:
+      raise ValueError("The undostack is empty")
+  
+  def empty(self) -> bool:
+    return len(self.stack) == 0
+
+
 class Display:
 
     def createButtons(self, frame, side, rows, arr):
